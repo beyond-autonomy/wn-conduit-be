@@ -20,7 +20,7 @@ module.exports = {
       return Util.envelop('Article must be specified.', 422);
     }
     const articleData = body.article;
-    for (const expectedField of ['title', 'description', 'body']) {
+    for (const expectedField of ['title', 'description', 'body', 'image']) {
       if (!articleData[expectedField]) {
         return Util.envelop(`${expectedField} must be specified.`, 422);
       }
@@ -34,6 +34,7 @@ module.exports = {
       title: articleData.title,
       description: articleData.description,
       body: articleData.body,
+      image: articleData.image,
       createdAt: timestamp,
       updatedAt: timestamp,
       author: authenticatedUser.username,
@@ -94,10 +95,10 @@ module.exports = {
     }
 
     // Ensure at least one mutation is requested
-    if (!articleMutation.title &&
-      !articleMutation.description && !articleMutation.body) {
+    if (!articleMutation.title && !articleMutation.description
+        && !articleMutation.body && !articleMutation.image) {
       return Util.envelop(
-        'At least one field must be specified: [title, description, article].',
+        'At least one field must be specified: [title, description, body, image].',
         422);
     }
 
@@ -128,7 +129,7 @@ module.exports = {
     }
 
     // Apply mutations to retrieved article
-    ['title', 'description', 'body'].forEach(field => {
+    ['title', 'description', 'body', 'image'].forEach(field => {
       if (articleMutation[field]) {
         article[field] = articleMutation[field];
       }
